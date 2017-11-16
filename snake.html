@@ -1,0 +1,120 @@
+<!DOCTYPE=html>
+<!-- Enhanced version of Gamkedo's 5 minute JS snake game -->
+<style>
+#reset{
+	visibility:hidden;
+}
+#center{
+	margin:auto;
+	text-align:center;
+}
+</style>
+<body>
+<div id="center">
+	<canvas id="gc" width="400" height="400">
+	</canvas>
+	
+	<div>
+		<h1 id="message"></h1>
+	</div>
+
+	<div id="reset">
+		<input type=button value="Play again?">
+	</div>
+</div>
+
+<script>
+	window.onload=function(){
+	canv=document.getElementById('gc');
+	ctx=canv.getContext("2d");
+	document.addEventListener("keydown",keyPush);
+	setInterval(game,1000/15);
+	}
+	px=py=10;
+	gs=tc=20;
+	ax=ay=15;
+	xv=yv=0;
+	trail=[];
+	tail=5;
+	
+	//extention of borders//
+function game(){
+	px+=xv;
+	py+=yv;
+	if(px==-1){
+	document.getElementById("message").innerHTML="You Lose";
+	trail=tail=0;
+	}
+	if(px>tc){
+	document.getElementById("message").innerHTML="You Lose";
+	trail=tail=0;
+	}
+	if(py==-1){
+	document.getElementById("message").innerHTML="You Lose";
+	trail=tail=0;
+	}
+	if(py>tc){
+	document.getElementById("message").innerHTML="You Lose";
+	trail=tail=0;
+	}
+	//canvas size//
+	ctx.fillStyle="black";
+	ctx.fillRect(0,0,canv.width,canv.height);
+	
+	
+	//snake length//
+	ctx.fillStyle="lime";
+	for(var i=0;i<trail.length;i++){
+		ctx.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);
+		if(trail[i].x==px && trail[i].y==py){
+			tail=5;
+		}
+	}
+	
+	//continue game if wall is not hit//
+	if(tail!=0){
+		trail.push({x:px,y:py});
+	}
+	
+	while(trail.length>tail){
+		trail.shift();
+	}
+	
+	//snake response to food//
+	if(ax==px&&ay==py){
+	tail++;
+	ax = Math.floor(Math.random()*tc);
+	ay = Math.floor(Math.random()*tc);
+	}
+	
+	//food //
+	ctx.fillStyle="red";
+	ctx.fillRect(ax*gs, ay*gs, gs-2,gs-2);
+	
+	//let the player restart the game//
+	if(tail==0){
+		document.getElementById("reset").style.visibility="visible";
+		document.getElementById("reset").addEventListener("click",function(){return document.location.reload();});
+	}
+}
+
+//keys being pressed//
+
+function keyPush(evt){
+	switch(evt.keyCode){
+		case 37:
+			xv=-1;yv=0;
+			break;
+		case 38:
+			xv=0;yv=-1;
+			break;
+		case 39:
+			xv=1;yv=0;
+			break;
+		case 40:
+			xv=0;yv=1;
+			break;
+	}
+}
+</script>
+</body>
